@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Auth {
+  userEmail String @id
+  user      User   @relation(fields: [userEmail], references: [email])
+  hash      String
+}
+
+enum UserType {
+  USER
+  AGENT
+  ADMIN
+}
+
+model User {
+  email String   @id
+  name  String
+  type  UserType
+
+  liked Listing[] @relation("liked")
+
+  auth Auth?
+
+  // Agent Specific Fields
+  agency   Agency? @relation(fields: [agencyId], references: [id])
+  agencyId String? @db.Uuid
+
+  listings Listing[] @relation("listings")
+  showings Showing[]
+}
+
+model Agency {
+  id      String @id @default(uuid()) @db.Uuid
+  name    String
+  address String
+  phone   String
+
+  agents User[]
+}
+
+model Listing {
+  mlsn        String  @id @db.Char(7)
+  description String
+  price       Decimal
+  sqft        Int
+  bedrooms    Int
+  bathrooms   Decimal
+  hoa         Boolean
+
+  rooms   String[]
+  images  String[]
+  schools School[]
+  likedBy User[]   @relation("liked")
+
+  street  String
+  city    String
+  state   String @db.Char(2)
+  zipcode Int
+
+  agentEmail String
+  agent      User   @relation("listings", fields: [agentEmail], references: [email])
+
+  showings Showing[]
+
+  occupied  Boolean
+  alarmInfo String
+  dailyHits Int
+}
+
+model School {
+  name     String    @id
+  grades   Int[]
+  listings Listing[]
+}
+
+model Showing {
+  when  DateTime
+  who   User     @relation(fields: [userEmail], references: [email])
+  where Listing  @relation(fields: [listingMlsn], references: [mlsn])
+
+  confirmed Boolean
+
+  userEmail   String
+  listingMlsn String @id @db.Char(7)
+}
