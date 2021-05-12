@@ -20,7 +20,7 @@ export function defineHandler<T extends z.ZodTypeAny>(zodOrHandler: T | RequestH
                 }
             }
 
-            return endpoint!(req)
+            return endpoint?.(req)
         }
     }
 
