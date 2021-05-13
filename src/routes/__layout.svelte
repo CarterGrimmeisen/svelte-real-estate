@@ -10,18 +10,13 @@
 		SideNavMenuItem,
 		SideNavLink,
 		SkipToContent,
-		Content,
-	} from 'carbon-components-svelte';
+		Content
+	} from 'carbon-components-svelte'
 
-	let isSideNavOpen = false;
+	let isSideNavOpen = false
 </script>
 
-<Header
-    expandedByDefault={false}
-	company="Free"
-	platformName="Real Estate"
-	bind:isSideNavOpen
->
+<Header expandedByDefault={false} company="Free" platformName="Real Estate" bind:isSideNavOpen>
 	<div slot="skip-to-content">
 		<SkipToContent />
 	</div>

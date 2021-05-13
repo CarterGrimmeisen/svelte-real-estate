@@ -1,1 +1,4 @@
 image: gitpod/workspace-postgres
+vscode:
+  extensions:
+    - coenraads.bracket-pair-colorizer-2

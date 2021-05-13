@@ -1,22 +1,30 @@
+import { defineHandler, defineValidator } from '$lib/endpoint'
 import * as z from 'zod'
-import { defineHandler } from '$lib/endpoint'
 
-export const get = defineHandler(({ query }) => {
-    return {
-        body: `Hello there, ${query.get('name')}!`
-    }
+const userQuery = defineValidator({
+    query: z.object({
+        name: z.string()
+    })
 })
 
-const userBody = z.object({
-    name: z.string(),
-    age: z.number(),
+export const get = defineHandler(userQuery, ({ query }) => {
+	return {
+		body: `Hello there, ${query.get('name')}!`
+	}
+})
+
+const userBody = defineValidator({
+	body: z.object({
+		name: z.string(),
+		age: z.number()
+	})
 })
 
 export const post = defineHandler(userBody, ({ body }) => {
-    return {
-        body: {
-            name: body.name,
-            age: body.age,
-        }
-    }
+	return {
+		body: {
+			name: body.name,
+			age: body.age
+		}
+	}
 })

@@ -1,5 +1,3 @@
 /// <reference types="@sveltejs/kit" />
 
-interface Locals {
-    
-}
+interface Locals {}
