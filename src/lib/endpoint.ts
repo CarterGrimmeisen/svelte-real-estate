@@ -1,23 +1,44 @@
-import type { RequestHandler } from '@sveltejs/kit'
-import type z from 'zod'
+import type {
+	EndpointOutput as KitEndpointOutput,
+	ServerRequest
+} from '@sveltejs/kit/types/endpoint'
+import type * as z from 'zod'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ZodAnyObject = z.ZodObject<any, any, any>
 
 type Validator = {
-	body?: z.AnyZodObject
-	query?: z.AnyZodObject
+	body?: ZodAnyObject
+	query?: ZodAnyObject
 }
 
-type BodyType<T extends Validator> = T extends { body: z.AnyZodObject } ? z.infer<T['body']> : never
+type BodyType<T extends Validator> = T extends { body: ZodAnyObject } ? z.infer<T['body']> : never
 
-type Handler<T extends Validator> = RequestHandler<Locals, BodyType<T>>
+export type ErrorOutput = { status: 400; body: ReturnType<z.ZodError['flatten']> }
+
+type EndpointOutput = KitEndpointOutput | Promise<KitEndpointOutput> | void
+
+export type RequestHandler<T extends EndpointOutput, Body = unknown> = (
+	request: ServerRequest<Locals, Body>
+) => T
+
+type Handler<T extends Validator, U extends EndpointOutput> = RequestHandler<U, BodyType<T>>
 
 export const defineValidator = <T extends Validator>(validator: T): T => validator
 
-export function defineHandler(handler: RequestHandler<Locals, never>): RequestHandler<Locals, never>
-export function defineHandler<T extends Validator>(zod: T, handler: Handler<T>): Handler<T>
-export function defineHandler<T extends Validator>(
-	zodOrHandler: T | Handler<T>,
-	endpoint?: RequestHandler<Locals, BodyType<T>>
-): Handler<T> {
+export function defineHandler<U extends EndpointOutput>(
+	handler: Handler<never, U>
+): Handler<never, U>
+
+export function defineHandler<T extends Validator, U extends EndpointOutput>(
+	zod: T,
+	handler: Handler<T, U>
+): Handler<T, U | ErrorOutput>
+
+export function defineHandler<T extends Validator, U extends EndpointOutput>(
+	zodOrHandler: T | Handler<T, U>,
+	endpoint?: Handler<T, U>
+): Handler<T, U | ErrorOutput> {
 	if (typeof zodOrHandler !== 'function') {
 		return (req) => {
 			if (zodOrHandler.body) {
@@ -26,10 +47,10 @@ export function defineHandler<T extends Validator>(
 					return {
 						status: 400,
 						body: {
-                            error: 'Bad Request',
-                            message: 'Errors were encountered validating request body',
-                            ...body.error.flatten()
-                        }
+							error: 'Bad Request',
+							message: 'Errors were encountered validating request body',
+							...body.error.flatten()
+						}
 					}
 				}
 
@@ -43,17 +64,18 @@ export function defineHandler<T extends Validator>(
 					return {
 						status: 400,
 						body: {
-                            error: 'Bad Request',
-                            message: 'Errors were encountered validating request query',
-                            ...query.error.flatten()
-                        }
+							error: 'Bad Request',
+							message: 'Errors were encountered validating request query',
+							...query.error.flatten()
+						}
 					}
 				}
 
 				req.query = new URLSearchParams(query.data)
 			}
 
-			return endpoint?.(req)
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			return endpoint!(req)
 		}
 	}
 

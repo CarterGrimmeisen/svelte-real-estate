@@ -1,17 +1,18 @@
 <script>
 	import {
+		Content,
 		Header,
 		HeaderNav,
 		HeaderNavItem,
 		HeaderNavMenu,
 		SideNav,
 		SideNavItems,
+		SideNavLink,
 		SideNavMenu,
 		SideNavMenuItem,
-		SideNavLink,
-		SkipToContent,
-		Content
+		SkipToContent
 	} from 'carbon-components-svelte'
+	import 'carbon-components-svelte/css/all.css'
 
 	let isSideNavOpen = false
 </script>
@@ -49,3 +50,9 @@
 <Content>
 	<slot />
 </Content>
+
+<style>
+	:global(.bx--side-nav ~ .bx--content) {
+		margin-left: 0 !important;
+	}
+</style>

@@ -10,6 +10,9 @@ const config = {
 	kit: {
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte',
+		paths: {
+			assets: 'node_modules/carbon-components-svelte/css'
+		},
 		vite: {
 			optimizeDeps: {
 				include: ['clipboard-copy']

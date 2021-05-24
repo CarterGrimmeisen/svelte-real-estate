@@ -1,3 +1,9 @@
 /// <reference types="@sveltejs/kit" />
 
-interface Locals {}
+import type { PrismaClient } from '@prisma/client'
+
+declare global {
+	interface Locals {
+		prisma: PrismaClient
+	}
+}

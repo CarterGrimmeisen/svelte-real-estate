@@ -2,9 +2,9 @@ import { defineHandler, defineValidator } from '$lib/endpoint'
 import * as z from 'zod'
 
 const userQuery = defineValidator({
-    query: z.object({
-        name: z.string()
-    })
+	query: z.object({
+		name: z.string()
+	})
 })
 
 export const get = defineHandler(userQuery, ({ query }) => {
