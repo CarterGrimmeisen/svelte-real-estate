@@ -2,7 +2,7 @@
 	"name": "svelte-real-estate",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "svelte-kit dev",
+		"dev": "./dev.sh",
 		"build": "svelte-kit build",
 		"preview": "svelte-kit preview",
 		"lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
@@ -37,6 +37,7 @@
 		"carbon-preprocess-svelte": "^0.1.0",
 		"clipboard-copy": "^4.0.1",
 		"filepond": "^4.27.1",
+		"filepond-plugin-image-preview": "^4.6.6",
 		"svelte-filepond": "^0.2.0",
 		"zod": "^3.0.0-beta.1"
 	}

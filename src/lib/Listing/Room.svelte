@@ -1,12 +1,13 @@
 <script lang="ts">
-	import type { Room } from '@prisma/client'
+	import { Tile, TextInput, TextArea, Row, Button, Column, Tooltip } from 'carbon-components-svelte'
+	import { Edit16, CheckmarkFilled16, TrashCan16 } from 'carbon-icons-svelte'
+	import { onMount, createEventDispatcher } from 'svelte'
 
-	import { Tile, TextInput, TextArea, Row, Button, Column } from 'carbon-components-svelte'
-	import { Edit16, EditOff16 } from 'carbon-icons-svelte'
-	import { onMount } from 'svelte'
+	import type { Room } from '@prisma/client'
 
 	export let room: Pick<Room, 'name' | 'description'>
 
+	const dispatch = createEventDispatcher()
 	let editing = false
 
 	onMount(() => {
@@ -22,18 +23,19 @@
 				size="small"
 				disabled={!room.name && !room.description}
 				tooltipPosition="left"
-				hasIconOnly
+				icon={editing ? CheckmarkFilled16 : Edit16}
 				iconDescription={editing ? 'Stop Editing Room' : 'Edit Room'}
 				on:click={() => (editing = !editing)}
-			>
-				{#if editing}
-					<EditOff16
-						style={`fill: var(--cds-support-0${!room.name && !room.description ? '1' : '4'})`}
-					/>
-				{:else}
-					<Edit16 />
-				{/if}
-			</Button>
+			/>
+
+			<Button
+				kind="danger"
+				size="small"
+				tooltipPosition="left"
+				icon={TrashCan16}
+				iconDescription="Delete Room"
+				on:click={() => dispatch('delete')}
+			/>
 		</Column>
 	</Row>
 	{#if editing}

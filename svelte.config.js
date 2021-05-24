@@ -1,5 +1,6 @@
-import preprocess from 'svelte-preprocess'
 import { optimizeImports } from 'carbon-preprocess-svelte'
+import preprocess from 'svelte-preprocess'
+import { Server } from 'http'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -16,7 +17,7 @@ const config = {
 		vite: {
 			optimizeDeps: {
 				include: ['clipboard-copy']
-			}
+			},
 		}
 	}
 }

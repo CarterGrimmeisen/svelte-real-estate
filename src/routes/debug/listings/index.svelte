@@ -1,13 +1,14 @@
 <script context="module" lang="ts">
+	import Images from '$lib/Listing/Images.svelte'
 	import Room from '$lib/Listing/Room.svelte'
 	import { createDefaultListing } from '$lib/util'
 	import type { Listing } from '@prisma/client'
 	import type { Load } from '@sveltejs/kit'
 	import {
+		Grid,
 		Button,
 		Column,
 		DataTable,
-		FileUploaderDropContainer,
 		Form,
 		FormGroup,
 		Modal,
@@ -15,10 +16,14 @@
 		Row,
 		TextArea,
 		TextInput,
-		Tile
+		Tile,
+		Toolbar,
+		ToolbarContent,
+		ToolbarSearch
 	} from 'carbon-components-svelte'
 	import { Add16 } from 'carbon-icons-svelte'
 	import { Robot } from 'carbon-pictograms-svelte'
+
 	export const load: Load = async ({ fetch }) => {
 		const res = await fetch(`./listings.json`)
 
@@ -59,14 +64,10 @@
 	}))
 
 	const newListing = createDefaultListing()
-	newListing.rooms = []
-</script>
 
-<Row style="margin-bottom: 1em">
-	<Column sm={{ span: 1, offset: 3 }} style="text-align: right">
-		<Button icon={Add16} on:click={() => (createListing = true)}>Create Listing</Button>
-	</Column>
-</Row>
+	const deleteRoom = (i: number) =>
+		(newListing.rooms = [...newListing.rooms.slice(0, i), ...newListing.rooms.slice(i + 1)])
+</script>
 
 <Modal
 	bind:open={createListing}
@@ -84,11 +85,7 @@
 			<TextInput labelText="MLS Number" placeholder="1234567" />
 		</FormGroup>
 		<FormGroup legendText="Images">
-			<FileUploaderDropContainer
-				labelText="Drag files here or click to browse for images."
-				accept={['image/*']}
-				multiple
-			/>
+			<Images />
 		</FormGroup>
 		<FormGroup>
 			<Row>
@@ -113,30 +110,32 @@
 			/>
 		</FormGroup>
 		<FormGroup legendText="Room Information">
-			<Row>
-				<Column sm={4} md={4} lg={5}>
-					<NumberInput label="Bedrooms" />
-				</Column>
-				<Column sm={4} md={4} lg={5}>
-					<NumberInput label="Bathrooms" />
-				</Column>
-				<Column sm={4} md={8} lg={{ span: 5, offset: 1 }}>
-					<Button
-						on:click={() =>
-							(newListing.rooms = [...newListing.rooms, { name: '', description: '' }])}
-						icon={Add16}
-						size="field"
-						style="max-width: 100%; width: 100%; margin-top: 24px"
-						kind="tertiary"
-					>
-						Add Room
-					</Button>
-				</Column>
-			</Row>
+			<Grid noGutter fullWidth>
+				<Row>
+					<Column sm={4} md={5} lg={5} style="padding-right: 5px">
+						<NumberInput label="Bedrooms" min={0} />
+					</Column>
+					<Column sm={4} md={3} lg={5} style="padding-right: 5px">
+						<NumberInput label="Bathrooms" step={0.5} min={0} />
+					</Column>
+					<Column sm={4} md={8} lg={{ span: 5, offset: 1 }}>
+						<Button
+							on:click={() =>
+								(newListing.rooms = [...newListing.rooms, { name: '', description: '' }])}
+							icon={Add16}
+							size="field"
+							style="max-width: 100%; width: 100%; margin-top: 24px"
+							kind="tertiary"
+						>
+							Add Room
+						</Button>
+					</Column>
+				</Row>
+			</Grid>
 			{#each newListing.rooms as room, i (i)}
 				<Row style="margin-top: 1em">
 					<Column>
-						<Room bind:room />
+						<Room bind:room on:delete={() => deleteRoom(i)} />
 					</Column>
 				</Row>
 			{:else}
@@ -157,4 +156,17 @@
 	</Form>
 </Modal>
 
-<DataTable sortable {headers} {rows} />
+<DataTable sortable {headers} {rows}>
+	<Toolbar>
+		<ToolbarContent>
+			<ToolbarSearch />
+			<Button icon={Add16} on:click={() => (createListing = true)}>Create Listing</Button>
+		</ToolbarContent>
+	</Toolbar>
+</DataTable>
+
+<style>
+	:global(.bx--number__input-wrapper > input) {
+		padding-right: 16px !important;
+	}
+</style>
