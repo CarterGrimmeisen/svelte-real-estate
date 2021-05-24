@@ -2,3 +2,13 @@ image: gitpod/workspace-postgres
 vscode:
   extensions:
     - coenraads.bracket-pair-colorizer-2
+    - equinusocio.vsc-community-material-theme
+    - mikestead.dotenv
+    - dbaeumer.vscode-eslint
+    - miguelsolorio.fluent-icons
+    - github.vscode-pull-request-github
+    - equinusocio.vsc-material-theme
+    - equinusocio.vsc-material-theme-icons
+    - prisma.prisma
+    - humao.rest-client
+    - svelte.svelte-vscode

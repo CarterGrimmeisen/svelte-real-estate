@@ -144,7 +144,7 @@
 						<Tile
 							style="text-align: center; margin-top: 1em; border: 1px solid var(--cds-ui-05,#161616);"
 						>
-							<Robot fill="var(--cds-brand-01)" height="96" width="96" />
+							<Robot height="96" width="96" />
 							<p>There are no rooms. Add one with the button above.</p>
 						</Tile>
 					</Column>

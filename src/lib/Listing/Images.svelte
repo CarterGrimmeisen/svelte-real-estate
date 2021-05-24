@@ -1,10 +1,10 @@
 <script lang="ts">
-	import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
-	import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
-	import 'filepond/dist/filepond.min.css';
-	import FilePond,{ registerPlugin } from 'svelte-filepond';
+	import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
+	import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
+	import 'filepond/dist/filepond.min.css'
+	import FilePond, { registerPlugin } from 'svelte-filepond'
 
-	registerPlugin(FilePondPluginImagePreview, )
+	registerPlugin(FilePondPluginImagePreview)
 
 	let pond: FilePond
 </script>
@@ -17,7 +17,7 @@
 	}
 
 	:global(.filepond--panel-root) {
-		background-color: var(--cds-field-02, #ffffff); 
+		background-color: var(--cds-field-02, #ffffff);
 		border-radius: 0;
 		border-bottom: 1px solid var(--cds-ui-04, #8d8d8d);
 	}
