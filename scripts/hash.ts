@@ -11,5 +11,5 @@ prompt<{ password: string }>([
 		message: 'Enter password to be hashed'
 	}
 ]).then(async ({ password }) => {
-	console.log(await hash(password, 12))
+	console.log(await hash(password, 8))
 })
