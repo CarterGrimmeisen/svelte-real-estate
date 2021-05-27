@@ -87,12 +87,14 @@ model Room {
 }
 
 model School {
-  name     String    @id
+  id       String    @id @default(uuid())
+  name     String
   grades   Int[]
   listings Listing[]
 }
 
 model Showing {
+  id    String   @id @default(uuid())
   when  DateTime
   who   User     @relation(fields: [userEmail], references: [email])
   where Listing  @relation(fields: [listingMlsn], references: [mlsn])
@@ -100,5 +102,5 @@ model Showing {
   confirmed Boolean
 
   userEmail   String
-  listingMlsn String @id @db.Char(7)
+  listingMlsn String @db.Char(7)
 }
