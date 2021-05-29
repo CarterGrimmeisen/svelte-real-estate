@@ -16,8 +16,8 @@
 </script>
 
 <Tile style="border: 1px solid var(--cds-ui-05,#161616);">
-	<Row style="margin-bottom: -1.5rem">
-		<Column sm={{ span: 1, offset: 3 }} style="text-align: right">
+	<Row class="mb3">
+		<Column sm={{ span: 1, offset: 3 }} class="center">
 			<Button
 				kind="ghost"
 				size="small"

@@ -1,7 +1,9 @@
 <script context="module" lang="ts">
 	import Images from '$lib/Listing/Images.svelte'
+	import InfiniteLoading from 'svelte-infinite-loading'
 	import Room from '$lib/Listing/Room.svelte'
 	import { createDefaultListing } from '$lib/util'
+	import type { InfiniteEvent } from 'svelte-infinite-loading'
 	import type { Listing } from '@prisma/client'
 	import type { Load } from '@sveltejs/kit'
 	import {
@@ -19,7 +21,8 @@
 		Tile,
 		Toolbar,
 		ToolbarContent,
-		ToolbarSearch
+		ToolbarSearch,
+		DataTableSkeleton
 	} from 'carbon-components-svelte'
 	import { Add16 } from 'carbon-icons-svelte'
 	import { Robot } from 'carbon-pictograms-svelte'
@@ -40,6 +43,7 @@
 
 <script lang="ts">
 	export let listings: Listing[]
+	let page = 1
 
 	let createListing = false
 
@@ -67,6 +71,22 @@
 
 	const deleteRoom = (i: number) =>
 		(newListing.rooms = [...newListing.rooms.slice(0, i), ...newListing.rooms.slice(i + 1)])
+
+	function loadMore({ detail: { loaded, complete } }: InfiniteEvent) {
+		fetch(`./listings.json?page=${page}`)
+			.then((response) => response.json())
+			.then((data: Listing[]) => {
+				if (data.length) {
+					setTimeout(() => {
+						page++
+						listings = [...listings, ...data]
+						loaded()
+					}, 5000)
+				} else {
+					complete()
+				}
+			})
+	}
 </script>
 
 <Modal
@@ -164,6 +184,24 @@
 		</ToolbarContent>
 	</Toolbar>
 </DataTable>
+
+<InfiniteLoading on:infinite={loadMore}>
+	<table slot="spinner" class="bx--skeleton bx--data-table">
+		<tbody>
+			<tr>
+				<td><span style="width: 100%" /></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table slot="noMore" class="bx--data-table">
+		<tbody>
+			<tr>
+				<td style="text-align: center"><span style="width: 100%">No More Data</span></td>
+			</tr>
+		</tbody>
+	</table>
+</InfiniteLoading>
 
 <style>
 	:global(.bx--number__input-wrapper > input) {

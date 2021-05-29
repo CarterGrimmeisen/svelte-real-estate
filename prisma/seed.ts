@@ -80,7 +80,7 @@ export async function main(): Promise<void> {
 					description: faker.lorem.paragraphs(faker.datatype.number({ min: 1, max: 5 })),
 					hoa: faker.datatype.boolean(),
 					occupied: faker.datatype.boolean(),
-					price: faker.datatype.number({ min: 70_000, max: 800_000, precision: 5_000 }),
+					price: faker.datatype.number({ min: 70_000, max: 500_000, precision: 5_000 }),
 					sqft: faker.datatype.number({ min: 800, max: 4_000, precision: 200 }),
 					street: faker.address.streetAddress(),
 					zipcode: parseInt(faker.address.zipCodeByState(state)),
